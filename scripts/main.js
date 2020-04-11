@@ -64,6 +64,19 @@ fetch(Covid19IndiaTimeSeriesAPI)
                     hover: {
                         animationDuration: 0 // duration of animations when hovering an item
                     },
+                    layout: {
+                        padding: {
+                            left: 100,
+                            right: 100,
+                            top: 100,
+                            bottom: 0
+                        }
+                    },
+                    title: {
+                        display: true,
+                        text: 'India Coronavirus Timelines',
+                        fontColor:'red'
+                     }
 
                 }
         });
