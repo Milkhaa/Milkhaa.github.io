@@ -117,6 +117,11 @@ fetch(Covid19IndianStatesDailyAPI)
 
 .then( againdontgiveafuckaboutthisword =>{
 
+    const indiaTotal = stateToCasesMap.get("IN-TT")
+    totalDiv = document.getElementById('total');
+    totalDiv.innerHTML = "WARNING: India Total is "+indiaTotal.toString();
+
+    stateToCasesMap.delete("IN-TT");//remove total from map
     var stateToCasesListItr =  Array.from( stateToCasesMap.keys() ) .map(function (key) {
         return [key,stateToCasesMap.get(key)];
     });
@@ -138,7 +143,7 @@ fetch(Covid19IndianStatesDailyAPI)
         resolution: 'provinces',
         width: 640,
         height: 480,
-        colorAxis: {minValue : 0, maxValue : 1500,colors: ["white","ffdfbf", "fed8b1", "orange","FF8C00","red","maroon"]},
+        colorAxis: {colors: ["white","ffdfbf", "fed8b1", "orange","FF8C00","red","maroon"]},
         backgroundColor: '#81d4fa'
       };
       var geochart = new google.visualization.GeoChart(
