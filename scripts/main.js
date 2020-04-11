@@ -126,24 +126,25 @@ fetch(Covid19IndianStatesDailyAPI)
     const stateToCasesListWithHeader = [['State Code','Total Confirmed Positive Cases']].concat(stateToCasesList)
 
 //###################################|Source - www.gstatic.com |######################################
-google.load('visualization', '1', {'packages': ['geochart']});
-google.setOnLoadCallback(drawVisualization);
+    google.load('visualization', '1', {'packages': ['geochart']});
+    google.setOnLoadCallback(drawVisualization);
 
-function drawVisualization() {
-  var data = google.visualization.arrayToDataTable(stateToCasesListWithHeader);
-  var opts = {
-    region: 'IN',
-    displayMode: 'regions',
-    resolution: 'provinces',
-    width: 640,
-    height: 480,
-    colorAxis: {minValue : 0, maxValue : 1500,colors: ["white","ffdfbf", "fed8b1", "orange","FF8C00","red","maroon"]},
-    backgroundColor: '#81d4fa',
-  };
-  var geochart = new google.visualization.GeoChart(
-      document.getElementById('visualization'));
-  geochart.draw(data, opts);
-};
+    function drawVisualization() {
+      var data = google.visualization.arrayToDataTable(stateToCasesListWithHeader);
+      var opts = {
+        region: 'IN',
+        domain : 'IN',//Kashmir issue from india perspective
+        displayMode: 'regions',
+        resolution: 'provinces',
+        width: 640,
+        height: 480,
+        colorAxis: {minValue : 0, maxValue : 1500,colors: ["white","ffdfbf", "fed8b1", "orange","FF8C00","red","maroon"]},
+        backgroundColor: '#81d4fa'
+      };
+      var geochart = new google.visualization.GeoChart(
+          document.getElementById('visualization'));
+      geochart.draw(data, opts);
+    };
 });
 
 
