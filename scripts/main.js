@@ -1,11 +1,12 @@
 const Covid19IndiaTimeSeriesAPI = 'https://api.covid19india.org/data.json';
+const Covid19IndianStatesDailyAPI = 'https://api.covid19india.org/states_daily.json';
 
 //Variables to store parsed data
 let dates = [];
 let totalconfirmed = [];
 let dailyconfirmed = [];
 
-//###################################|Source - https://api.covid19india.org/|######################################
+//1.National cases###################################|Source - https://api.covid19india.org/|######################################
 //Make a get call to APIs provided by `https://api.covid19india.org/`
 fetch(Covid19IndiaTimeSeriesAPI)
 .then(res => res.json())
@@ -68,4 +69,68 @@ fetch(Covid19IndiaTimeSeriesAPI)
         });
 
  })
+
+
+//2.statewise cases###################################|Source - https://api.covid19india.org/|######################################
+let stateToCasesMap = new Map()
+
+fetch(Covid19IndianStatesDailyAPI)
+.then(res => res.json())
+.then(data=>{
+      states_daily = data.states_daily;
+      let states_daily_confirmed = states_daily.filter(json => {
+        return json.status === "Confirmed";
+      })
+
+      var len = states_daily_confirmed.length;
+      for (var i = 0; i < len; i++){
+            var json = states_daily_confirmed[i];
+            for(var key in json){
+                if (key ==="status" || key ==="date")
+                    continue
+
+                keyCap = key.toUpperCase()
+                if (stateToCasesMap.has("IN-"+keyCap)){
+                    let jsonCurrValue = parseInt(json[key]);
+                    if (!isNaN(jsonCurrValue)){//Ignore errors in the API response data e.g " "
+                        stateToCasesMap.set("IN-"+keyCap,stateToCasesMap.get("IN-"+keyCap)+ jsonCurrValue)
+                    }
+                }else{
+                    stateToCasesMap.set("IN-"+keyCap,parseInt(json[key]))
+                }
+            }
+      }
+})
+
+.then( againdontgiveafuckaboutthisword =>{
+
+    var stateToCasesListItr =  Array.from( stateToCasesMap.keys() ) .map(function (key) {
+        return [key,stateToCasesMap.get(key)];
+    });
+
+
+    const stateToCasesList = Array.from(stateToCasesListItr)
+    const stateToCasesListWithHeader = [['State Code','Total Confirmed Positive Cases']].concat(stateToCasesList)
+
+//###################################|Source - www.gstatic.com |######################################
+google.load('visualization', '1', {'packages': ['geochart']});
+google.setOnLoadCallback(drawVisualization);
+
+function drawVisualization() {
+  var data = google.visualization.arrayToDataTable(stateToCasesListWithHeader);
+  var opts = {
+    region: 'IN',
+    displayMode: 'regions',
+    resolution: 'provinces',
+    width: 640,
+    height: 480,
+    colorAxis: {minValue : 0, maxValue : 1500,colors: ["white","ffdfbf", "fed8b1", "orange","FF8C00","red","maroon"]},
+    backgroundColor: '#81d4fa',
+  };
+  var geochart = new google.visualization.GeoChart(
+      document.getElementById('visualization'));
+  geochart.draw(data, opts);
+};
+});
+
 
