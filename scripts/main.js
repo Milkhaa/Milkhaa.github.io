@@ -1,5 +1,6 @@
 const Covid19IndiaTimeSeriesAPI = 'https://api.covid19india.org/data.json';
 const Covid19IndianStatesDailyAPI = 'https://api.covid19india.org/states_daily.json';
+const Covid19IndiaNews = "https://api.smartable.ai/coronavirus/news/IN"
 
 //Variables to store parsed data
 let dates = [];
@@ -152,4 +153,62 @@ fetch(Covid19IndianStatesDailyAPI)
     };
 });
 
+//#############################
+let galleryElems = []
+fetch(Covid19IndiaNews,
+{
+  headers: {
+    'Subscription-Key': '3009d4ccc29e4808af1ccc25c69b4d5d'
+  }
+})
+.then(res => res.json())
+.then(data=>{
+      news_arr = data.news;
+      var len = news_arr.length;
+      for (var i = 0; i < len; i++){
+            let title = news_arr[i].title;
+            let excerpt = news_arr[i].excerpt;
+            let webUrl = news_arr[i].webUrl;
+            let publishedDateTime = news_arr[i].publishedDateTime;
 
+            let images = news_arr[i].images;
+            let imageUrl = null;
+            if (images !== null && images.length > 0){
+                imageUrl = images[0].url;
+            }
+
+            let modifiedtitle =  publishedDateTime+ " : " + title;
+           let elem = {};
+           if (imageUrl === null){
+                elem = {
+                    'href': webUrl,
+                    'type': 'external',
+                   'title': title,
+                   'description': excerpt,
+                }
+           }else{
+                elem = {
+                     'href': imageUrl,
+                     'type': 'image',
+                     'title': title,
+                     'description': excerpt,
+                }
+           }
+            galleryElems.push(elem);
+
+      }
+})
+
+.then( sayingagaindontgiveafuckaboutthisword =>{
+
+//#############################
+    const myGallery = GLightbox({
+        elements : galleryElems,
+        autoplayVideos: true,
+    });
+
+    let newsButton = document.getElementById('india-news');
+    newsButton.onclick = function(){myGallery.open();};
+
+
+});
